@@ -49,8 +49,8 @@ docker-compose up -d --build
 3.  **Host/IP**: The IP address of your Linux host.
 4.  **Share Name**: `scans`
 5.  **Path**: (Leave empty or use `/`)
-6.  **Username**: `guest` (or leave empty if allowed)
-7.  **Password**: (Leave empty)
+6.  **Username**: `scanner`
+7.  **Password**: `scanner123`
 
 ### 4. Verify
 

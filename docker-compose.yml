@@ -9,7 +9,8 @@ services:
       - TZ=America/Sao_Paulo
       - WORKGROUP=WORKGROUP
       # Share definition: name;path;browsable;readonly;guest;users;admins;writelist;comment
-      - SHARE=scans;/mount/scans;yes;no;yes;all;none;all;Scanner Drop Folder
+      - SHARE=scans;/mount/scans;yes;no;no;scanner;none;scanner;Scanner Drop Folder
+      - USER=scanner;scanner123
       - PERMISSIONS=777
     ports:
       - "139:139"
@@ -36,6 +37,7 @@ services:
 
 volumes:
   scans_volume:
+
 
 networks:
   scan_net:
