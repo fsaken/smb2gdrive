@@ -2,7 +2,7 @@
 
 WATCH_DIR="/data"
 REMOTE_NAME="remote" # Matches the name in rclone.conf
-REMOTE_DIR="${DRIVE_FOLDER:-Scans}"
+#REMOTE_DIR="${DRIVE_FOLDER:-Scans}"
 
 echo "Starting Scan-to-Drive Monitor..."
 echo "Watching directory: $WATCH_DIR"
@@ -29,7 +29,7 @@ do
         echo "Uploading $FILENAME to Google Drive..."
         
         # Move the file to Google Drive (upload and delete from local)
-        rclone move "$FILEPATH" "$REMOTE_NAME:$REMOTE_DIR" --log-level INFO
+        rclone move "$FILEPATH" "$REMOTE_NAME" --log-level INFO
         
         if [ $? -eq 0 ]; then
             echo "Successfully uploaded and removed: $FILENAME"
