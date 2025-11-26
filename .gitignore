@@ -3,6 +3,7 @@ scans_volume/
 
 # Rclone configuration (contains secrets)
 config/rclone.conf
+.env
 
 # System files
 .DS_Store

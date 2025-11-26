@@ -67,20 +67,32 @@ graph LR
 
 ## ⚙️ Configuration
 
+### Environment Variables (`.env`)
+
+Copy the example file to create your configuration:
+```bash
+cp .env.example .env
+```
+
+Edit the `.env` file to customize your settings:
+
+| Variable | Description | Default |
+| :--- | :--- | :--- |
+| `SMB_USER` | Samba username | `scanner` |
+| `SMB_PASSWORD` | Samba password | `scanner123` |
+| `SMB_SHARE` | Share name | `scans` |
+| `SMB_WORKGROUP` | Workgroup | `WORKGROUP` |
+| `TZ` | Timezone | `America/Sao_Paulo` |
+
 ### Printer Setup
-Point your printer's "Scan to Network" / SMB settings to:
+Point your printer's "Scan to Network" / SMB settings to match your `.env` values:
 
 | Setting | Value |
 | :--- | :--- |
 | **Host/IP** | Your Docker Host IP |
-| **Share Name** | `scans` |
-| **Username** | `scanner` |
-| **Password** | `scanner123` |
-
-### Environment Variables (`docker-compose.yml`)
-
--   `TZ`: Timezone (default: `America/Sao_Paulo`)
--   `WORKGROUP`: SMB Workgroup (default: `WORKGROUP`)
+| **Share Name** | `scans` (or value of `SMB_SHARE`) |
+| **Username** | `scanner` (or value of `SMB_USER`) |
+| **Password** | `scanner123` (or value of `SMB_PASSWORD`) |
 
 ## 🤝 Contributing
 
