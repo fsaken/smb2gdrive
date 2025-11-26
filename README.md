@@ -1,68 +1,94 @@
-# smb2drive
+# 🖨️ smb2drive
 
-**Author**: Gustavo Maceu
-**License**: MIT
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)
+![Google Drive](https://img.shields.io/badge/Google%20Drive-4285F4?style=flat&logo=googledrive&logoColor=white)
+![Samba](https://img.shields.io/badge/SMB-Server-orange)
 
-This application acts as a simple file server (SMB) to receive scans from a printer and automatically uploads them to Google Drive (Personal or Shared).
+**smb2drive** is a lightweight, Docker-based bridge that seamlessly connects your network scanner/printer to Google Drive. It emulates a Windows File Server (SMB) to receive scans and automatically uploads them to your cloud storage.
 
-## Prerequisites
+---
 
-- Docker and Docker Compose installed on your Linux host.
-- A Google account.
+## 🏗️ Architecture
 
-## Setup Instructions
+```mermaid
+graph LR
+    subgraph Local Network
+        Printer[🖨️ Printer/Scanner]
+        subgraph Docker Host
+            SMB[📂 Samba Container]
+            Uploader[🚀 Uploader Container]
+        end
+    end
+    Cloud[☁️ Google Drive]
 
-### 1. Configure Google Drive Access (Rclone)
-
-You need to generate an `rclone.conf` file with your Google Drive credentials.
-
-1.  **Install rclone** on your local machine (or use a temporary container).
-    - Linux: `sudo apt install rclone`
-    - Windows: Download from rclone.org
-2.  Run `rclone config` in your terminal.
-3.  Create a new remote:
-    - **Name**: `remote` (This is important, the script expects this name).
-    - **Type**: `drive`.
-    - Follow the prompts to authenticate with your Google account.
-    - **Important for Shared Drives**: When asked if you want to configure this as a Shared Drive (Team Drive), answer **y** (yes) and select the specific Shared Drive you want to use.
-4.  Once finished, locate your `rclone.conf` file.
-    - Linux: `~/.config/rclone/rclone.conf`
-    - Windows: `%APPDATA%/rclone/rclone.conf`
-5.  Copy this file to the `config` directory in this project:
-    ```bash
-    mkdir -p config
-    cp /path/to/your/rclone.conf ./config/rclone.conf
-    ```
-
-### 2. Start the Application
-
-Run the following command to build and start the services:
-
-```bash
-docker-compose up -d --build
+    Printer -- SMB (Scans) --> SMB
+    SMB -- Shared Volume --> Uploader
+    Uploader -- Rclone (HTTPS) --> Cloud
 ```
 
-### 3. Configure Your Printer
+## 🚀 Features
 
-1.  Access your printer's web interface or settings.
-2.  Set up a new "Scan to Network" or "SMB" destination.
-3.  **Host/IP**: The IP address of your Linux host.
-4.  **Share Name**: `scans`
-5.  **Path**: (Leave empty or use `/`)
-6.  **Username**: `scanner`
-7.  **Password**: `scanner123`
+-   **Drop & Forget**: Scans saved to the folder are instantly uploaded.
+-   **Google Drive Integration**: Supports both Personal and **Shared Drives (Team Drives)**.
+-   **Zero Maintenance**: Runs quietly in the background with Docker.
+-   **Secure**: Uses `rclone` for secure, encrypted transfers.
 
-### 4. Verify
+## 📋 Prerequisites
 
-1.  Scan a document from your printer.
-2.  Check the logs to see the upload progress:
+-   **Docker** & **Docker Compose** installed.
+-   A **Google Account**.
+
+## 🛠️ Installation
+
+1.  **Clone the repository**
     ```bash
-    docker-compose logs -f uploader
+    git clone https://github.com/gustavomaceu/smb2drive.git
+    cd smb2drive
     ```
-3.  Verify the file appears in your Google Drive in the `Scans` folder.
 
-## Troubleshooting
+2.  **Configure Google Drive Access**
+    You need to authorize the application to access your Google Drive.
+    1.  Install `rclone` on your machine (or use a temp container).
+    2.  Run `rclone config`.
+    3.  Create a new remote named **`remote`**:
+        -   **Type**: `drive`
+        -   **Shared Drive**: Answer **y** if using a Team Drive.
+    4.  Copy the generated `rclone.conf` to the project:
+        ```bash
+        mkdir -p config
+        cp /path/to/rclone.conf ./config/rclone.conf
+        ```
 
-- **Connection Refused**: Ensure port 445 is not blocked by a firewall on your Linux host.
-- **Permission Denied**: The Samba share is configured as public/guest, but some printers require a valid username. You can try using any username/password.
-- **File not uploading**: Check the `uploader` logs for rclone errors. Ensure the remote name in `rclone.conf` is `remote`.
+3.  **Start the Services**
+    ```bash
+    docker-compose up -d --build
+    ```
+
+## ⚙️ Configuration
+
+### Printer Setup
+Point your printer's "Scan to Network" / SMB settings to:
+
+| Setting | Value |
+| :--- | :--- |
+| **Host/IP** | Your Docker Host IP |
+| **Share Name** | `scans` |
+| **Username** | `scanner` |
+| **Password** | `scanner123` |
+
+### Environment Variables (`docker-compose.yml`)
+
+-   `TZ`: Timezone (default: `America/Sao_Paulo`)
+-   `WORKGROUP`: SMB Workgroup (default: `WORKGROUP`)
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+**Author**: Gustavo Maceu
