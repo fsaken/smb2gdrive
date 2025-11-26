@@ -1,0 +1,9 @@
+# Docker volumes
+scans_volume/
+
+# Rclone configuration (contains secrets)
+config/rclone.conf
+
+# System files
+.DS_Store
+Thumbs.db

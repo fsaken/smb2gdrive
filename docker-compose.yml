@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  samba:
+    image: dperson/samba
+    container_name: samba_server
+    restart: unless-stopped
+    environment:
+      - TZ=America/Sao_Paulo
+      - WORKGROUP=WORKGROUP
+      # Share definition: name;path;browsable;readonly;guest;users;admins;writelist;comment
+      - SHARE=scans;/mount/scans;yes;no;yes;all;none;all;Scanner Drop Folder
+      - PERMISSIONS=777
+    ports:
+      - "139:139"
+      - "445:445"
+    volumes:
+      - scans_volume:/mount/scans
+    networks:
+      - scan_net
+
+  uploader:
+    build: ./uploader
+    container_name: drive_uploader
+    restart: unless-stopped
+    environment:
+      - TZ=America/Sao_Paulo
+      # Optional: Target folder in Google Drive
+      - DRIVE_FOLDER=Scans
+    volumes:
+      - scans_volume:/data
+      # Mount the rclone config file from the host
+      - ./config/rclone.conf:/root/.config/rclone/rclone.conf
+    networks:
+      - scan_net
+
+volumes:
+  scans_volume:
+
+networks:
+  scan_net:
