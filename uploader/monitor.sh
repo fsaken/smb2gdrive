@@ -2,11 +2,11 @@
 
 WATCH_DIR="/data"
 REMOTE_NAME="remote" # Matches the name in rclone.conf
-#REMOTE_DIR="${DRIVE_FOLDER:-Scans}"
+TARGET_DIR="${TARGET_FOLDER:-Scans}"
 
-echo "Starting Scan-to-Drive Monitor..."
+echo "Starting Scan-to-Cloud Monitor..."
 echo "Watching directory: $WATCH_DIR"
-echo "Target: $REMOTE_NAME:$REMOTE_DIR"
+echo "Target: $REMOTE_NAME:$TARGET_DIR"
 
 # Ensure rclone config exists
 if [ ! -f /root/.config/rclone/rclone.conf ]; then
@@ -26,10 +26,10 @@ do
     FILEPATH="$WATCH_DIR/$FILENAME"
     
     if [ -f "$FILEPATH" ]; then
-        echo "Uploading $FILENAME to Google Drive..."
+        echo "Uploading $FILENAME to Cloud Storage..."
         
-        # Move the file to Google Drive (upload and delete from local)
-        rclone move "$FILEPATH" "$REMOTE_NAME" --log-level INFO
+        # Move the file to Cloud Storage (upload and delete from local)
+        rclone move "$FILEPATH" "$REMOTE_NAME:$TARGET_DIR" --log-level INFO
         
         if [ $? -eq 0 ]; then
             echo "Successfully uploaded and removed: $FILENAME"

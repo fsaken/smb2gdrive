@@ -24,8 +24,8 @@ services:
     restart: unless-stopped
     environment:
       - TZ=America/Sao_Paulo
-      # Optional: Target folder in Google Drive
-      - DRIVE_FOLDER=Scans
+      # Optional: Target folder in Cloud Storage (Google Drive, SharePoint, OneDrive etc.)
+      - TARGET_FOLDER=${TARGET_FOLDER:-Scans}
     volumes:
       - scans_volume:/data
       # Mount the rclone config directory (allows rclone to update/backup the file)

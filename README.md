@@ -1,11 +1,12 @@
-# 🖨️ smb2drive
+# 🖨️ smb2drive (Multi-Cloud)
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)
 ![Google Drive](https://img.shields.io/badge/Google%20Drive-4285F4?style=flat&logo=googledrive&logoColor=white)
+![SharePoint](https://img.shields.io/badge/SharePoint-0078D4?style=flat&logo=microsoftsharepoint&logoColor=white)
 ![Samba](https://img.shields.io/badge/SMB-Server-orange)
 
-**smb2drive** is a lightweight, Docker-based bridge that seamlessly connects your network scanner/printer to Google Drive. It emulates a Windows File Server (SMB) to receive scans and automatically uploads them to your cloud storage.
+**smb2drive** is a lightweight, Docker-based bridge that seamlessly connects your network scanner/printer to Google Drive, Microsoft SharePoint, OneDrive, and more. It emulates a Windows File Server (SMB) to receive scans and automatically uploads them to your preferred cloud storage using `rclone`.
 
 ---
 
@@ -20,7 +21,7 @@ graph LR
             Uploader[🚀 Uploader Container]
         end
     end
-    Cloud[☁️ Google Drive]
+    Cloud[☁️ Cloud Storage (G. Drive, SharePoint, etc.)]
 
     Printer -- SMB (Scans) --> SMB
     SMB -- Shared Volume --> Uploader
@@ -30,14 +31,14 @@ graph LR
 ## 🚀 Features
 
 -   **Drop & Forget**: Scans saved to the folder are instantly uploaded.
--   **Google Drive Integration**: Supports both Personal and **Shared Drives (Team Drives)**.
+-   **Multi-Cloud Support**: Connect to **Google Drive**, **Microsoft SharePoint**, **OneDrive**, and others thanks to `rclone` capabilities.
 -   **Zero Maintenance**: Runs quietly in the background with Docker.
 -   **Secure**: Uses `rclone` for secure, encrypted transfers.
 
 ## 📋 Prerequisites
 
 -   **Docker** & **Docker Compose** installed.
--   A **Google Account**.
+-   An account with your preferred Cloud provider (Google, Microsoft, etc.).
 
 ## 🛠️ Installation
 
@@ -47,13 +48,22 @@ graph LR
     cd smb2drive
     ```
 
-2.  **Configure Google Drive Access**
-    You need to authorize the application to access your Google Drive.
+2.  **Configure Cloud Storage Access**
+    You need to authorize the application to access your cloud storage.
     1.  Install `rclone` on your machine (or use a temp container).
     2.  Run `rclone config`.
-    3.  Create a new remote named **`remote`**:
+    3.  Create a new remote and you **MUST** name it **`remote`**:
+        
+        **For Microsoft SharePoint / OneDrive:**
+        -   **Type**: `onedrive`
+        -   Leave *client_id* and *client_secret* blank.
+        -   Authenticate when prompted.
+        -   Choose your endpoint (e.g., `Sharepoint` or `OneDrive`).
+        
+        **For Google Drive:**
         -   **Type**: `drive`
         -   **Shared Drive**: Answer **y** if using a Team Drive.
+        
     4.  Copy the generated `rclone.conf` to the project:
         ```bash
         mkdir -p config
@@ -82,6 +92,7 @@ Edit the `.env` file to customize your settings:
 | `SMB_PASSWORD` | Samba password | `scanner123` |
 | `SMB_SHARE` | Share name | `scans` |
 | `SMB_WORKGROUP` | Workgroup | `WORKGROUP` |
+| `TARGET_FOLDER` | Upload destination folder | `Scans` |
 | `TZ` | Timezone | `America/Sao_Paulo` |
 
 ### Printer Setup
