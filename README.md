@@ -21,7 +21,7 @@ graph LR
             Uploader[🚀 Uploader Container]
         end
     end
-    Cloud[☁️ Cloud Storage (G. Drive, SharePoint, etc.)]
+    Cloud["☁️ Cloud Storage (G. Drive, SharePoint, etc.)"]
 
     Printer -- SMB (Scans) --> SMB
     SMB -- Shared Volume --> Uploader
